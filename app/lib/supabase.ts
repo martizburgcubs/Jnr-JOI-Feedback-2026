@@ -34,7 +34,7 @@ type SupabaseRow = {
   info_pack: number;
   game_format: number;
   scheduling: number;
-  officiating: number;
+  officiating?: number | null;
   facilities: number;
   organisation: number;
   hosting: number;
@@ -95,7 +95,7 @@ export async function listResponses(): Promise<StoredResponse[]> {
     infoPack: row.info_pack,
     gameFormat: row.game_format,
     scheduling: row.scheduling,
-    officiating: row.officiating,
+    officiating: row.officiating ?? 0,
     facilities: row.facilities,
     organisation: row.organisation,
     hosting: row.hosting,
