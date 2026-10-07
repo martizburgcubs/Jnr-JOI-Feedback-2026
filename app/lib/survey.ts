@@ -26,7 +26,7 @@ export const AREA_OPTIONS = [
   "Tournament atmosphere",
 ] as const;
 
-export const DIVISION_OPTIONS = ["U14", "U15", "Both divisions"] as const;
+export const DIVISION_OPTIONS = ["U13", "U14", "U15", "Both U14 & U15"] as const;
 
 export const ratingLabels: Record<number, string> = {
   1: "Very poor", 2: "Poor", 3: "Good", 4: "Very good", 5: "Excellent",
