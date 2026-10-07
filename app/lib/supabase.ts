@@ -59,16 +59,20 @@ function settings(kind: "public" | "admin") {
   return { url, key };
 }
 
+function requestHeaders(key: string, includeContentType = false) {
+  const headers: Record<string, string> = { apikey: key };
+  // Supabase's new sb_publishable_/sb_secret_ keys are API keys, not JWTs.
+  // Legacy anon/service-role JWT keys still require the bearer header.
+  if (!key.startsWith("sb_")) headers.authorization = `Bearer ${key}`;
+  if (includeContentType) headers["content-type"] = "application/json";
+  return headers;
+}
+
 export async function insertResponse(row: Omit<SupabaseRow, "id" | "created_at">) {
   const { url, key } = settings("public");
   const response = await fetch(`${url}/rest/v1/joi_feedback`, {
     method: "POST",
-    headers: {
-      apikey: key,
-      authorization: `Bearer ${key}`,
-      "content-type": "application/json",
-      prefer: "return=minimal",
-    },
+    headers: { ...requestHeaders(key, true), prefer: "return=minimal" },
     body: JSON.stringify(row),
   });
   if (!response.ok) throw new Error(`Supabase insert failed (${response.status}): ${await response.text()}`);
@@ -77,7 +81,7 @@ export async function insertResponse(row: Omit<SupabaseRow, "id" | "created_at">
 export async function listResponses(): Promise<StoredResponse[]> {
   const { url, key } = settings("admin");
   const response = await fetch(`${url}/rest/v1/joi_feedback?select=*&order=created_at.desc`, {
-    headers: { apikey: key, authorization: `Bearer ${key}` },
+    headers: requestHeaders(key),
     cache: "no-store",
   });
   if (!response.ok) throw new Error(`Supabase query failed (${response.status}): ${await response.text()}`);
