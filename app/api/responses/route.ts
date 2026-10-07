@@ -26,10 +26,10 @@ const schema = z.object({
   schedulePace: z.enum(["Too compressed", "Slightly compressed", "Well balanced", "Too spread out"]),
   strengths: z.array(z.enum(AREA_OPTIONS)).min(1).max(3),
   priorityArea: z.enum([...AREA_OPTIONS, "None — keep it as is"]),
-  highlight: z.string().trim().max(500),
-  improvement: z.string().trim().max(500),
+  highlight: z.string().trim().min(1).max(500),
+  improvement: z.string().trim().min(1).max(500),
   returnIntent: z.enum(["Definitely", "Probably", "Unsure", "Probably not", "Definitely not"]),
-  comments: z.string().trim().max(800),
+  comments: z.string().trim().min(1).max(800),
   website: z.string().max(0),
 });
 

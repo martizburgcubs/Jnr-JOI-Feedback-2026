@@ -35,13 +35,20 @@ export default function AdminDashboard() {
     finally { setLoading(false); }
   }, []);
 
-  useEffect(() => { void load(); }, [load]);
+  useEffect(() => {
+    const timer = window.setTimeout(() => { void load(); }, 0);
+    return () => window.clearTimeout(timer);
+  }, [load]);
 
   async function login(event: FormEvent<HTMLFormElement>) {
     event.preventDefault(); setError("");
     const form = new FormData(event.currentTarget);
     const response = await fetch("/api/admin/login", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ passcode: form.get("passcode") }) });
-    if (!response.ok) { setError("Incorrect passcode. Please try again."); return; }
+    if (!response.ok) {
+      const result = await response.json().catch(() => ({})) as { error?: string };
+      setError(result.error || "Incorrect passcode. Please try again.");
+      return;
+    }
     await load();
   }
 

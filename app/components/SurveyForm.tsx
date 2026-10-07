@@ -62,12 +62,19 @@ export default function SurveyForm() {
       </section>
       <section className="form-section" id="ratings">
         <FieldHeading number="02" title="Rate the tournament" hint="Choose one answer per row." />
+        <div className="rating-key rating-key-top" aria-label="Rating scale">
+          <strong>Rating scale</strong>
+          <span><b>1</b> Very poor</span>
+          <span><b>2</b> Poor</span>
+          <span><b>3</b> Good</span>
+          <span><b>4</b> Very good</span>
+          <span><b>5</b> Excellent</span>
+        </div>
         <div className="rating-progress"><span>{completedRatings} of {RATING_FIELDS.length} rated</span><div><i style={{ width: `${completedRatings / RATING_FIELDS.length * 100}%` }} /></div></div>
         <div className="rating-table">
           <div className="rating-head"><span>Area</span>{[1,2,3,4,5].map((value) => <span key={value}>{value}</span>)}</div>
           {RATING_FIELDS.map(([key, label]) => <fieldset className="rating-row" key={key}><legend>{label}</legend><div>{[1,2,3,4,5].map((value) => <label key={value} title={ratingLabels[value]} className={ratings[key] === value ? "selected" : ""}><input type="radio" name={key} value={value} checked={ratings[key] === value} onChange={() => { setRatings((current) => ({ ...current, [key]: value })); setRatingError(false); }} /><span>{value}<small>{ratingLabels[value]}</small></span></label>)}</div></fieldset>)}
         </div>
-        <div className="rating-key"><span>1 Very poor</span><span>2 Poor</span><span>3 Good</span><span>4 Very good</span><span>5 Excellent</span></div>
         {ratingError && <p className="inline-error">Please rate every area.</p>}
       </section>
       <section className="form-section">
@@ -80,10 +87,10 @@ export default function SurveyForm() {
       <section className="form-section">
         <FieldHeading number="04" title="In your own words" hint="Short answers are perfect." />
         <div className="field-grid two">
-          <label className="input-field"><span>What was the tournament highlight?</span><textarea name="highlight" maxLength={500} rows={4} placeholder="A moment, experience or detail that stood out…" /></label>
-          <label className="input-field"><span>What is the one most important improvement?</span><textarea name="improvement" maxLength={500} rows={4} placeholder="The change that would make the biggest difference…" /></label>
+          <label className="input-field"><span>What was the tournament highlight? <b>*</b></span><textarea name="highlight" required minLength={1} maxLength={500} rows={4} placeholder="A moment, experience or detail that stood out…" /></label>
+          <label className="input-field"><span>What is the one most important improvement? <b>*</b></span><textarea name="improvement" required minLength={1} maxLength={500} rows={4} placeholder="The change that would make the biggest difference…" /></label>
         </div>
-        <label className="input-field full"><span>Anything else you would like us to know?</span><textarea name="comments" maxLength={800} rows={4} placeholder="Optional additional comments" /></label>
+        <label className="input-field full"><span>Anything else you would like us to know? <b>*</b></span><textarea name="comments" required minLength={1} maxLength={800} rows={4} placeholder="Enter your comments, or type None" /></label>
         <label className="honeypot" aria-hidden="true">Website<input name="website" tabIndex={-1} autoComplete="off" /></label>
       </section>
       <div className="submit-zone"><div><strong>Ready to send?</strong><p>You will not be able to edit your response after submitting.</p></div><button className="primary-button" type="submit" disabled={status === "sending"}>{status === "sending" ? "Sending…" : <>Submit feedback <ArrowRight size={18} /></>}</button></div>
