@@ -72,7 +72,7 @@ export default function SurveyForm() {
         </div>
         <div className="rating-progress"><span>{completedRatings} of {RATING_FIELDS.length} rated</span><div><i style={{ width: `${completedRatings / RATING_FIELDS.length * 100}%` }} /></div></div>
         <div className="rating-table">
-          <div className="rating-head"><span>Area</span>{[1,2,3,4,5].map((value) => <span key={value}>{value}</span>)}</div>
+          <div className="rating-head"><span>Area</span>{[1,2,3,4,5].map((value) => <span key={value}><b>{value}</b><small>{ratingLabels[value]}</small></span>)}</div>
           {RATING_FIELDS.map(([key, label]) => <fieldset className="rating-row" key={key}><legend>{label}</legend><div>{[1,2,3,4,5].map((value) => <label key={value} title={ratingLabels[value]} className={ratings[key] === value ? "selected" : ""}><input type="radio" name={key} value={value} checked={ratings[key] === value} onChange={() => { setRatings((current) => ({ ...current, [key]: value })); setRatingError(false); }} /><span>{value}<small>{ratingLabels[value]}</small></span></label>)}</div></fieldset>)}
         </div>
         {ratingError && <p className="inline-error">Please rate every area.</p>}

@@ -28,7 +28,10 @@ export default function AdminDashboard() {
     try {
       const response = await fetch("/api/admin/data", { cache: "no-store" });
       if (response.status === 401) { setLocked(true); setRows(null); return; }
-      if (!response.ok) throw new Error("Could not load responses.");
+      if (!response.ok) {
+        const result = await response.json().catch(() => ({})) as { error?: string };
+        throw new Error(result.error || "Could not load responses.");
+      }
       const result = await response.json() as { responses: Row[] };
       setRows(result.responses); setLocked(false);
     } catch (caught) { setError(caught instanceof Error ? caught.message : "Could not load responses."); }
@@ -56,7 +59,9 @@ export default function AdminDashboard() {
 
   if (locked) return <main className="admin-login"><div className="login-card"><Image src="/joi-logo.png" alt="Junior JOI" width={104} height={104} priority /><span className="section-tag">Organiser dashboard</span><h1>Feedback results</h1><p>Enter the organiser passcode to view responses and export reports.</p><form onSubmit={login}><label className="input-field"><span>Passcode</span><input name="passcode" type="password" required autoFocus placeholder="Enter passcode" /></label>{error && <p className="form-error">{error}</p>}<button className="primary-button" type="submit"><ShieldCheck size={18} /> Open dashboard</button></form><Link href="/"><ArrowLeft size={15} /> Back to survey</Link></div></main>;
 
-  if (loading || !rows) return <main className="admin-login"><div className="loading-mark"><RefreshCw className="spin" /><p>Loading feedback…</p></div></main>;
+  if (loading) return <main className="admin-login"><div className="loading-mark"><RefreshCw className="spin" /><p>Loading feedback…</p></div></main>;
+
+  if (error || !rows) return <main className="admin-login"><div className="login-card"><Image src="/joi-logo.png" alt="Junior JOI" width={92} height={92} priority /><span className="section-tag">Connection problem</span><h1>Feedback could not load</h1><p className="form-error">{error || "The dashboard could not retrieve the responses."}</p><button className="primary-button" type="button" onClick={() => void load()}><RefreshCw size={18} /> Try again</button><button className="text-button" type="button" onClick={() => void logout()}><ArrowLeft size={15} /> Return to login</button></div></main>;
 
   return <Dashboard rows={rows} error={error} refresh={load} logout={logout} />;
 }
