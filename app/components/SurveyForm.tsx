@@ -62,14 +62,6 @@ export default function SurveyForm() {
       </section>
       <section className="form-section" id="ratings">
         <FieldHeading number="02" title="Rate the tournament" hint="Choose one answer per row." />
-        <div className="rating-key rating-key-top" aria-label="Rating scale">
-          <strong>Rating scale</strong>
-          <span><b>1</b> Very poor</span>
-          <span><b>2</b> Poor</span>
-          <span><b>3</b> Good</span>
-          <span><b>4</b> Very good</span>
-          <span><b>5</b> Excellent</span>
-        </div>
         <div className="rating-progress"><span>{completedRatings} of {RATING_FIELDS.length} rated</span><div><i style={{ width: `${completedRatings / RATING_FIELDS.length * 100}%` }} /></div></div>
         <div className="rating-table">
           <div className="rating-head"><span>Area</span>{[1,2,3,4,5].map((value) => <span key={value}><b>{value}</b><small>{ratingLabels[value]}</small></span>)}</div>
